@@ -126,6 +126,9 @@
             this.Name = "MsgBox";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Load += new System.EventHandler(this.MsgBox_Load);
+            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.MsgBox_MouseDown);
+            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MsgBox_MouseMove);
+            this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.MsgBox_MouseUp);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.IconPb)).EndInit();

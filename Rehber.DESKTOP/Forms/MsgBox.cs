@@ -116,6 +116,31 @@ namespace Rehber.DESKTOP.Forms
             }
         }
 
+        private bool mouseDown;
+        private Point lastLocation;
+
+        private void MsgBox_MouseDown(object sender, MouseEventArgs e)
+        {
+            mouseDown = true;
+            lastLocation = e.Location;
+        }
+
+        private void MsgBox_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (mouseDown)
+            {
+                this.Location = new Point(
+                    (this.Location.X - lastLocation.X) + e.X, (this.Location.Y - lastLocation.Y) + e.Y);
+
+                this.Update();
+            }
+        }
+
+        private void MsgBox_MouseUp(object sender, MouseEventArgs e)
+        {
+            mouseDown = false;
+        }
+
         private void HayırBtn_Click(object sender, EventArgs e)
         {
             this.DialogResult = DialogResult.No;

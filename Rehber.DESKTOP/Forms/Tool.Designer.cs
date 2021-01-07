@@ -56,11 +56,11 @@
             this.myLocationControl = new Rehber.DESKTOP.MyUserControl.MyLocationControl();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.Type = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.Value = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.KaydetBtn = new System.Windows.Forms.ToolStripDropDownButton();
             this.errorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
-            this.Type = new System.Windows.Forms.DataGridViewComboBoxColumn();
-            this.Value = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tabControlRehberInfo.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -341,6 +341,24 @@
             this.dataGridView1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.dataGridView1_MouseDown);
             this.dataGridView1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.dataGridView1_MouseUp);
             // 
+            // Type
+            // 
+            this.Type.HeaderText = "Türü";
+            this.Type.Items.AddRange(new object[] {
+            "Dahili No",
+            "Sabit No",
+            "Mobil No",
+            "Fax No",
+            "Vergi No",
+            "Adres",
+            "E-mail Adresi"});
+            this.Type.Name = "Type";
+            // 
+            // Value
+            // 
+            this.Value.HeaderText = "Değer";
+            this.Value.Name = "Value";
+            // 
             // statusStrip1
             // 
             this.statusStrip1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(71)))), ((int)(((byte)(89)))));
@@ -366,24 +384,6 @@
             // 
             this.errorProvider1.ContainerControl = this;
             this.errorProvider1.Icon = ((System.Drawing.Icon)(resources.GetObject("errorProvider1.Icon")));
-            // 
-            // Type
-            // 
-            this.Type.HeaderText = "Türü";
-            this.Type.Items.AddRange(new object[] {
-            "Dahili",
-            "Sabit Hat",
-            "Mobil No",
-            "Fax No",
-            "Verrgi No",
-            "Adres",
-            "E-mail Adresi"});
-            this.Type.Name = "Type";
-            // 
-            // Value
-            // 
-            this.Value.HeaderText = "Değer";
-            this.Value.Name = "Value";
             // 
             // Tool
             // 

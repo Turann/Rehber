@@ -14,7 +14,7 @@ namespace Rehber.DESKTOP
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Mainn());
+            Application.Run(new Login());
         }
     }
 }

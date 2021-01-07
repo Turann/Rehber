@@ -71,6 +71,12 @@ namespace Rehber.DESKTOP.Forms
                             {
                                 TreeNode fourthChildNo = new TreeNode(fourthChild.LAciklama);
                                 thirdChildNo.Nodes.Add(fourthChildNo);
+                                var fifthChildNode = LokasyonData.Where(a => a.ParentId == fourthChild.Id); // last written
+                                foreach (var fifthChild in fifthChildNode)
+                                {
+                                    TreeNode fifthChildNo = new TreeNode(fifthChild.LAciklama);
+                                    fourthChildNo.Nodes.Add(fifthChildNo);
+                                }
                             }
                         }
                     }

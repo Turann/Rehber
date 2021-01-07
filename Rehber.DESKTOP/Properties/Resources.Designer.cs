@@ -263,6 +263,16 @@ namespace Rehber.DESKTOP.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap mainContainer2 {
+            get {
+                object obj = ResourceManager.GetObject("mainContainer2", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap MainUserIcon {
             get {
                 object obj = ResourceManager.GetObject("MainUserIcon", resourceCulture);

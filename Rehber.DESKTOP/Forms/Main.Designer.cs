@@ -134,6 +134,7 @@
             // 
             this.dataGridView1.AllowUserToAddRows = false;
             this.dataGridView1.AllowUserToDeleteRows = false;
+            this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dataGridView1.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllHeaders;
             this.dataGridView1.BackgroundColor = System.Drawing.SystemColors.ButtonHighlight;
             this.dataGridView1.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
@@ -151,7 +152,8 @@
             // 
             // panelUstBilgi
             // 
-            this.panelUstBilgi.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("panelUstBilgi.BackgroundImage")));
+            this.panelUstBilgi.BackgroundImage = global::Rehber.DESKTOP.Properties.Resources.mainContainer2;
+            this.panelUstBilgi.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.panelUstBilgi.Controls.Add(this.LokasyonBtn);
             this.panelUstBilgi.Controls.Add(this.SantiyeBtn);
             this.panelUstBilgi.Controls.Add(this.BirimBtn);

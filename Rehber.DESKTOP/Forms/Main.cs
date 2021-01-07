@@ -82,7 +82,7 @@ namespace Rehber.DESKTOP.Forms
             dataGridView1.Columns[4].Width = 192;
             dataGridView1.Columns[5].Width = 154;
             dataGridView1.Columns[6].Width = 150;
-            dataGridView1.Columns[7].Width = 194;
+            dataGridView1.Columns[7].Width = 195;
             dataGridView1.RowHeadersWidth = 30;
         }
 
@@ -107,9 +107,9 @@ namespace Rehber.DESKTOP.Forms
         {
             First = dataGridView1.SelectedRows[0].Cells["Ad"].Value?.ToString();
             Second = dataGridView1.SelectedRows[0].Cells["Soyad"].Value?.ToString();
-            Third = dataGridView1.SelectedRows[0].Cells["Dahili No"].Value?.ToString();
-            Fourth = dataGridView1.SelectedRows[0].Cells["Mobil No"].Value?.ToString();
-            Fifth = dataGridView1.SelectedRows[0].Cells["E-Mail"].Value?.ToString();
+            Third = dataGridView1.SelectedRows[0].Cells["Dahili No"].Value?.ToString().Split('-')[0].TrimEnd();
+            Fourth = dataGridView1.SelectedRows[0].Cells["Mobil No"].Value?.ToString().Split('-')[0].TrimEnd();
+            Fifth = dataGridView1.SelectedRows[0].Cells["E-Mail"].Value?.ToString().Split('-')[0].TrimEnd();
             Sixth = dataGridView1.SelectedRows[0].Cells["Şirket"].Value?.ToString();
             Seventh = dataGridView1.SelectedRows[0].Cells["Görev Yeri"].Value?.ToString();
             Eighth = dataGridView1.SelectedRows[0].Cells["Açıklama"].Value?.ToString();
@@ -119,9 +119,9 @@ namespace Rehber.DESKTOP.Forms
         private void SirketCellEqualizer()
         {
             First = dataGridView1.SelectedRows[0].Cells["Şirket"].Value?.ToString();
-            Second = dataGridView1.SelectedRows[0].Cells["Sabit No"].Value?.ToString();
-            Third = dataGridView1.SelectedRows[0].Cells["Fax No"].Value?.ToString();
-            Fourth = dataGridView1.SelectedRows[0].Cells["Vergi No"].Value?.ToString();
+            Second = dataGridView1.SelectedRows[0].Cells["Sabit No"].Value?.ToString().Split('-')[0].TrimEnd();
+            Third = dataGridView1.SelectedRows[0].Cells["Fax No"].Value?.ToString().Split('-')[0].TrimEnd();
+            Fourth = dataGridView1.SelectedRows[0].Cells["Vergi No"].Value?.ToString().Split('-')[0].TrimEnd();
             Fifth = dataGridView1.SelectedRows[0].Cells["Yetkilisi"].Value?.ToString();
             Sixth = dataGridView1.SelectedRows[0].Cells["Ünvanı"].Value?.ToString();
             Ninth = RehberInfoIds[dataGridView1.CurrentCell.RowIndex];
@@ -131,7 +131,7 @@ namespace Rehber.DESKTOP.Forms
         {
             First = dataGridView1.SelectedRows[0].Cells["Birim"].Value?.ToString();
             Second = dataGridView1.SelectedRows[0].Cells["Şirket"].Value?.ToString();
-            Third = dataGridView1.SelectedRows[0].Cells["Dahili No"].Value?.ToString();
+            Third = dataGridView1.SelectedRows[0].Cells["Dahili No"].Value?.ToString().Split('-')[0].TrimEnd();
             Fourth = dataGridView1.SelectedRows[0].Cells["Görevli"].Value?.ToString();
             Ninth = RehberInfoIds[dataGridView1.CurrentCell.RowIndex];
         }
@@ -139,8 +139,8 @@ namespace Rehber.DESKTOP.Forms
         private void SantiyeCellEqualizer()
         {
             First = dataGridView1.SelectedRows[0].Cells["Şantiye"].Value?.ToString();
-            Second = dataGridView1.SelectedRows[0].Cells["Sabit No"].Value?.ToString();
-            Third = dataGridView1.SelectedRows[0].Cells["Fax No"].Value?.ToString();
+            Second = dataGridView1.SelectedRows[0].Cells["Sabit No"].Value?.ToString().Split('-')[0].TrimEnd();
+            Third = dataGridView1.SelectedRows[0].Cells["Fax No"].Value?.ToString().Split('-')[0].TrimEnd();
             Fourth = dataGridView1.SelectedRows[0].Cells["Yetkilisi"].Value?.ToString();
             Ninth = RehberInfoIds[dataGridView1.CurrentCell.RowIndex];
         }
@@ -169,8 +169,12 @@ namespace Rehber.DESKTOP.Forms
 
             if (flag == "Kisi")
             {
-                var RehberTempGate = RehberData.Where(a => a.RehberKayitTuru == 0);
+                List<string> DahiliList = new List<string>();
+                List<string> MobilList = new List<string>();
+                List<string> EMailList = new List<string>();
 
+                var RehberTempGate = RehberData.Where(a => a.RehberKayitTuru == 0);
+                
                 if (AdTemp != "" && SoyadTemp != "")
                 {
                     RehberInfoIds = new List<int>();
@@ -181,14 +185,36 @@ namespace Rehber.DESKTOP.Forms
 
                         if (RehberTemp.Ad.Contains(ToUpperEveryWord(AdTemp)) && RehberTemp.Soyad.Contains(ToUpperEveryWord(SoyadTemp)))
                         {
+                            DahiliList = new List<string>();
+                            MobilList = new List<string>();
+                            EMailList = new List<string>();
+
                             row.Add(RehberTemp.Ad);
                             row.Add(RehberTemp.Soyad);
 
                             int RehId = RehberTemp.Id;
 
+                            var IletisimContainer = IletisimData.Where(a => a.RehberId == RehId);
+
+                            foreach (var IletisimContainerTemp in IletisimContainer)
+                            {
+                                if (IletisimContainerTemp.IletisimTuru == 1)
+                                {
+                                    DahiliList.Add(IletisimContainerTemp.IAciklama);
+                                }
+                                else if(IletisimContainerTemp.IletisimTuru == 3)
+                                {
+                                    MobilList.Add(IletisimContainerTemp.IAciklama);
+                                }
+                                else if (IletisimContainerTemp.IletisimTuru == 7)
+                                {
+                                    EMailList.Add(IletisimContainerTemp.IAciklama);
+                                }
+                            }
+
                             try
                             {
-                                row.Add(IletisimData.Where(a => a.RehberId == RehId && a.IletisimTuru == 1).First().IAciklama);
+                                row.Add(string.Join(" - ", DahiliList));
                             }
                             catch (InvalidOperationException)
                             {
@@ -197,7 +223,7 @@ namespace Rehber.DESKTOP.Forms
 
                             try
                             {
-                                row.Add(IletisimData.Where(a => a.RehberId == RehId && a.IletisimTuru == 3).First().IAciklama);
+                                row.Add(string.Join(" - ", MobilList));
                             }
                             catch (InvalidOperationException)
                             {
@@ -206,7 +232,7 @@ namespace Rehber.DESKTOP.Forms
 
                             try
                             {
-                                row.Add(IletisimData.Where(a => a.RehberId == RehId && a.IletisimTuru == 7).First().IAciklama);
+                                row.Add(string.Join(" - ", EMailList));
                             }
                             catch (InvalidOperationException)
                             {
@@ -232,6 +258,10 @@ namespace Rehber.DESKTOP.Forms
                 }
                 else if (AdTemp != "" && SoyadTemp == "")
                 {
+                    DahiliList = new List<string>();
+                    MobilList = new List<string>();
+                    EMailList = new List<string>();
+
                     RehberInfoIds = new List<int>();
 
                     foreach (var RehberTemp in RehberTempGate)
@@ -245,9 +275,27 @@ namespace Rehber.DESKTOP.Forms
 
                             int RehId = RehberTemp.Id;
 
+                            var IletisimContainer = IletisimData.Where(a => a.RehberId == RehId);
+
+                            foreach (var IletisimContainerTemp in IletisimContainer)
+                            {
+                                if (IletisimContainerTemp.IletisimTuru == 1)
+                                {
+                                    DahiliList.Add(IletisimContainerTemp.IAciklama);
+                                }
+                                else if (IletisimContainerTemp.IletisimTuru == 3)
+                                {
+                                    MobilList.Add(IletisimContainerTemp.IAciklama);
+                                }
+                                else if (IletisimContainerTemp.IletisimTuru == 7)
+                                {
+                                    EMailList.Add(IletisimContainerTemp.IAciklama);
+                                }
+                            }
+
                             try
                             {
-                                row.Add(IletisimData.Where(a => a.RehberId == RehId && a.IletisimTuru == 1).First().IAciklama);
+                                row.Add(string.Join(" - ", DahiliList));
                             }
                             catch (InvalidOperationException)
                             {
@@ -256,7 +304,7 @@ namespace Rehber.DESKTOP.Forms
 
                             try
                             {
-                                row.Add(IletisimData.Where(a => a.RehberId == RehId && a.IletisimTuru == 3).First().IAciklama);
+                                row.Add(string.Join(" - ", MobilList));
                             }
                             catch (InvalidOperationException)
                             {
@@ -265,7 +313,7 @@ namespace Rehber.DESKTOP.Forms
 
                             try
                             {
-                                row.Add(IletisimData.Where(a => a.RehberId == RehId && a.IletisimTuru == 7).First().IAciklama);
+                                row.Add(string.Join(" - ", EMailList));
                             }
                             catch (InvalidOperationException)
                             {
@@ -291,6 +339,10 @@ namespace Rehber.DESKTOP.Forms
                 }
                 else if (AdTemp == "" && SoyadTemp != "")
                 {
+                    DahiliList = new List<string>();
+                    MobilList = new List<string>();
+                    EMailList = new List<string>();
+
                     RehberInfoIds = new List<int>();
 
                     foreach (var RehberTemp in RehberTempGate)
@@ -304,9 +356,27 @@ namespace Rehber.DESKTOP.Forms
 
                             int RehId = RehberTemp.Id;
 
+                            var IletisimContainer = IletisimData.Where(a => a.RehberId == RehId);
+
+                            foreach (var IletisimContainerTemp in IletisimContainer)
+                            {
+                                if (IletisimContainerTemp.IletisimTuru == 1)
+                                {
+                                    DahiliList.Add(IletisimContainerTemp.IAciklama);
+                                }
+                                else if (IletisimContainerTemp.IletisimTuru == 3)
+                                {
+                                    MobilList.Add(IletisimContainerTemp.IAciklama);
+                                }
+                                else if (IletisimContainerTemp.IletisimTuru == 7)
+                                {
+                                    EMailList.Add(IletisimContainerTemp.IAciklama);
+                                }
+                            }
+
                             try
                             {
-                                row.Add(IletisimData.Where(a => a.RehberId == RehId && a.IletisimTuru == 1).First().IAciklama);
+                                row.Add(string.Join(" - ", DahiliList));
                             }
                             catch (InvalidOperationException)
                             {
@@ -315,7 +385,7 @@ namespace Rehber.DESKTOP.Forms
 
                             try
                             {
-                                row.Add(IletisimData.Where(a => a.RehberId == RehId && a.IletisimTuru == 3).First().IAciklama);
+                                row.Add(string.Join(" - ", MobilList));
                             }
                             catch (InvalidOperationException)
                             {
@@ -324,7 +394,7 @@ namespace Rehber.DESKTOP.Forms
 
                             try
                             {
-                                row.Add(IletisimData.Where(a => a.RehberId == RehId && a.IletisimTuru == 7).First().IAciklama);
+                                row.Add(string.Join(" - ", EMailList));
                             }
                             catch (InvalidOperationException)
                             {
@@ -354,6 +424,10 @@ namespace Rehber.DESKTOP.Forms
 
                     foreach (var RehberTemp in RehberTempGate)
                     {
+                        DahiliList = new List<string>();
+                        MobilList = new List<string>();
+                        EMailList = new List<string>();
+
                         row = new ArrayList();
 
                         row.Add(RehberTemp.Ad);
@@ -361,9 +435,27 @@ namespace Rehber.DESKTOP.Forms
 
                         int RehId = RehberTemp.Id;
 
+                        var IletisimContainer = IletisimData.Where(a => a.RehberId == RehId);
+
+                        foreach (var IletisimContainerTemp in IletisimContainer)
+                        {
+                            if (IletisimContainerTemp.IletisimTuru == 1)
+                            {
+                                DahiliList.Add(IletisimContainerTemp.IAciklama);
+                            }
+                            else if (IletisimContainerTemp.IletisimTuru == 3)
+                            {
+                                MobilList.Add(IletisimContainerTemp.IAciklama);
+                            }
+                            else if (IletisimContainerTemp.IletisimTuru == 7)
+                            {
+                                EMailList.Add(IletisimContainerTemp.IAciklama);
+                            }
+                        }
+
                         try
                         {
-                            row.Add(IletisimData.Where(a => a.RehberId == RehId && a.IletisimTuru == 1).First().IAciklama);
+                            row.Add(string.Join(" - ", DahiliList));
                         }
                         catch (InvalidOperationException)
                         {
@@ -372,7 +464,7 @@ namespace Rehber.DESKTOP.Forms
 
                         try
                         {
-                            row.Add(IletisimData.Where(a => a.RehberId == RehId && a.IletisimTuru == 3).First().IAciklama);
+                            row.Add(string.Join(" - ", MobilList));
                         }
                         catch (InvalidOperationException)
                         {
@@ -381,7 +473,7 @@ namespace Rehber.DESKTOP.Forms
 
                         try
                         {
-                            row.Add(IletisimData.Where(a => a.RehberId == RehId && a.IletisimTuru == 7).First().IAciklama);
+                            row.Add(string.Join(" - ", EMailList));
                         }
                         catch (InvalidOperationException)
                         {
@@ -406,12 +498,20 @@ namespace Rehber.DESKTOP.Forms
             }
             else if (flag == "Sirket")
             {
+                List<string> SabitList = new List<string>();
+                List<string> FaxList = new List<string>();
+                List<string> VergiList = new List<string>();
+
                 var RehberDataGate = RehberData.Where(a => a.RehberKayitTuru == 1);
                 var LokasyonData = LokasyonRestHelper.GetAll();
                 ArrayList rowTemp = new ArrayList();
 
                 if (AdTemp != "")
                 {
+                    SabitList = new List<string>();
+                    FaxList = new List<string>();
+                    VergiList = new List<string>();
+
                     RehberInfoIds = new List<int>();
 
                     foreach (var RehberTemp in RehberDataGate)
@@ -424,9 +524,27 @@ namespace Rehber.DESKTOP.Forms
 
                             int RehId = RehberTemp.Id;
 
+                            var IletisimContainer = IletisimData.Where(a => a.RehberId == RehId);
+
+                            foreach (var IletisimContainerTemp in IletisimContainer)
+                            {
+                                if (IletisimContainerTemp.IletisimTuru == 2)
+                                {
+                                    SabitList.Add(IletisimContainerTemp.IAciklama);
+                                }
+                                else if (IletisimContainerTemp.IletisimTuru == 4)
+                                {
+                                    FaxList.Add(IletisimContainerTemp.IAciklama);
+                                }
+                                else if (IletisimContainerTemp.IletisimTuru == 5)
+                                {
+                                    VergiList.Add(IletisimContainerTemp.IAciklama);
+                                }
+                            }
+
                             try
                             {
-                                row.Add(IletisimData.Where(a => a.RehberId == RehId && a.IletisimTuru == 2).First().IAciklama);
+                                row.Add(string.Join(" - ", SabitList));
                             }
                             catch (InvalidOperationException)
                             {
@@ -435,7 +553,7 @@ namespace Rehber.DESKTOP.Forms
 
                             try
                             {
-                                row.Add(IletisimData.Where(a => a.RehberId == RehId && a.IletisimTuru == 4).First().IAciklama);
+                                row.Add(string.Join(" - ", FaxList));
                             }
                             catch (InvalidOperationException)
                             {
@@ -444,7 +562,7 @@ namespace Rehber.DESKTOP.Forms
 
                             try
                             {
-                                row.Add(IletisimData.Where(a => a.RehberId == RehId && a.IletisimTuru == 5).First().IAciklama);
+                                row.Add(string.Join(" - ", VergiList));
                             }
                             catch (InvalidOperationException)
                             {
@@ -514,15 +632,37 @@ namespace Rehber.DESKTOP.Forms
 
                     foreach (var RehberTemp in RehberDataGate)
                     {
+                        SabitList = new List<string>();
+                        FaxList = new List<string>();
+                        VergiList = new List<string>();
+
                         row = new ArrayList();
 
                         row.Add(RehberTemp.Sirket);
 
                         int RehId = RehberTemp.Id;
 
+                        var IletisimContainer = IletisimData.Where(a => a.RehberId == RehId);
+
+                        foreach (var IletisimContainerTemp in IletisimContainer)
+                        {
+                            if (IletisimContainerTemp.IletisimTuru == 2)
+                            {
+                                SabitList.Add(IletisimContainerTemp.IAciklama);
+                            }
+                            else if (IletisimContainerTemp.IletisimTuru == 4)
+                            {
+                                FaxList.Add(IletisimContainerTemp.IAciklama);
+                            }
+                            else if (IletisimContainerTemp.IletisimTuru == 5)
+                            {
+                                VergiList.Add(IletisimContainerTemp.IAciklama);
+                            }
+                        }
+
                         try
                         {
-                            row.Add(IletisimData.Where(a => a.RehberId == RehId && a.IletisimTuru == 2).First().IAciklama);
+                            row.Add(string.Join(" - ", SabitList));
                         }
                         catch (InvalidOperationException)
                         {
@@ -531,7 +671,7 @@ namespace Rehber.DESKTOP.Forms
 
                         try
                         {
-                            row.Add(IletisimData.Where(a => a.RehberId == RehId && a.IletisimTuru == 4).First().IAciklama);
+                            row.Add(string.Join(" - ", FaxList));
                         }
                         catch (InvalidOperationException)
                         {
@@ -540,7 +680,7 @@ namespace Rehber.DESKTOP.Forms
 
                         try
                         {
-                            row.Add(IletisimData.Where(a => a.RehberId == RehId && a.IletisimTuru == 5).First().IAciklama);
+                            row.Add(string.Join(" - ", VergiList));
                         }
                         catch (InvalidOperationException)
                         {
@@ -606,12 +746,16 @@ namespace Rehber.DESKTOP.Forms
             }
             else if (flag == "Birim")
             {
+                List<string> DahiliList = new List<string>();
+
                 var RehberDataGate = RehberData.Where(a => a.RehberKayitTuru == 2);
                 var LokasyonData = LokasyonRestHelper.GetAll();
                 ArrayList rowTemp = new ArrayList();
 
                 if (AdTemp != "")
                 {
+                    DahiliList = new List<string>();
+
                     RehberInfoIds = new List<int>();
 
                     foreach (var RehberTemp in RehberDataGate)
@@ -625,9 +769,19 @@ namespace Rehber.DESKTOP.Forms
 
                             int RehId = RehberTemp.Id;
 
+                            var IletisimContainer = IletisimData.Where(a => a.RehberId == RehId);
+
+                            foreach (var IletisimContainerTemp in IletisimContainer)
+                            {
+                                if (IletisimContainerTemp.IletisimTuru == 1)
+                                {
+                                    DahiliList.Add(IletisimContainerTemp.IAciklama);
+                                }
+                            }
+
                             try
                             {
-                                row.Add(IletisimData.Where(a => a.RehberId == RehId && a.IletisimTuru == 1).First().IAciklama);
+                                row.Add(string.Join(" - ", DahiliList));
                             }
                             catch (InvalidOperationException)
                             {
@@ -696,6 +850,8 @@ namespace Rehber.DESKTOP.Forms
 
                     foreach (var RehberTemp in RehberDataGate)
                     {
+                        DahiliList = new List<string>();
+
                         row = new ArrayList();
 
                         row.Add(RehberTemp.BirimAdi);
@@ -703,9 +859,19 @@ namespace Rehber.DESKTOP.Forms
 
                         int RehId = RehberTemp.Id;
 
+                        var IletisimContainer = IletisimData.Where(a => a.RehberId == RehId);
+
+                        foreach (var IletisimContainerTemp in IletisimContainer)
+                        {
+                            if (IletisimContainerTemp.IletisimTuru == 1)
+                            {
+                                DahiliList.Add(IletisimContainerTemp.IAciklama);
+                            }
+                        }
+
                         try
                         {
-                            row.Add(IletisimData.Where(a => a.RehberId == RehId && a.IletisimTuru == 1).First().IAciklama);
+                            row.Add(string.Join(" - ", DahiliList));
                         }
                         catch (InvalidOperationException)
                         {
@@ -770,12 +936,18 @@ namespace Rehber.DESKTOP.Forms
             }
             else if (flag == "Santiye")
             {
+                List<string> SabitList = new List<string>();
+                List<string> FaxList = new List<string>();
+
                 var LokasyonData = LokasyonRestHelper.GetAll();
                 var RehberDataGate = RehberData.Where(a => a.RehberKayitTuru == 3);
                 ArrayList rowTemp = new ArrayList();
 
                 if (AdTemp != "")
                 {
+                    SabitList = new List<string>();
+                    FaxList = new List<string>();
+
                     RehberInfoIds = new List<int>();
 
                     foreach (var RehberTemp in RehberDataGate)
@@ -788,9 +960,23 @@ namespace Rehber.DESKTOP.Forms
 
                             int RehId = RehberTemp.Id;
 
+                            var IletisimContainer = IletisimData.Where(a => a.RehberId == RehId);
+
+                            foreach (var IletisimContainerTemp in IletisimContainer)
+                            {
+                                if (IletisimContainerTemp.IletisimTuru == 2)
+                                {
+                                    SabitList.Add(IletisimContainerTemp.IAciklama);
+                                }
+                                else if (IletisimContainerTemp.IletisimTuru == 4)
+                                {
+                                    FaxList.Add(IletisimContainerTemp.IAciklama);
+                                }
+                            }
+
                             try
                             {
-                                row.Add(IletisimData.Where(a => a.RehberId == RehId && a.IletisimTuru == 2).First().IAciklama);
+                                row.Add(string.Join(" - ", SabitList));
                             }
                             catch (InvalidOperationException)
                             {
@@ -799,7 +985,7 @@ namespace Rehber.DESKTOP.Forms
 
                             try
                             {
-                                row.Add(IletisimData.Where(a => a.RehberId == RehId && a.IletisimTuru == 4).First().IAciklama);
+                                row.Add(string.Join(" - ", FaxList));
                             }
                             catch (InvalidOperationException)
                             {
@@ -868,15 +1054,32 @@ namespace Rehber.DESKTOP.Forms
 
                     foreach (var RehberTemp in RehberDataGate)
                     {
+                        SabitList = new List<string>();
+                        FaxList = new List<string>();
+
                         row = new ArrayList();
 
                         row.Add(RehberTemp.Santiye);
 
                         int RehId = RehberTemp.Id;
 
+                        var IletisimContainer = IletisimData.Where(a => a.RehberId == RehId);
+
+                        foreach (var IletisimContainerTemp in IletisimContainer)
+                        {
+                            if (IletisimContainerTemp.IletisimTuru == 2)
+                            {
+                                SabitList.Add(IletisimContainerTemp.IAciklama);
+                            }
+                            else if (IletisimContainerTemp.IletisimTuru == 4)
+                            {
+                                FaxList.Add(IletisimContainerTemp.IAciklama);
+                            }
+                        }
+
                         try
                         {
-                            row.Add(IletisimData.Where(a => a.RehberId == RehId && a.IletisimTuru == 2).First().IAciklama);
+                            row.Add(string.Join(" - ", SabitList));
                         }
                         catch (InvalidOperationException)
                         {
@@ -885,7 +1088,7 @@ namespace Rehber.DESKTOP.Forms
 
                         try
                         {
-                            row.Add(IletisimData.Where(a => a.RehberId == RehId && a.IletisimTuru == 4).First().IAciklama);
+                            row.Add(string.Join(" - ", FaxList));
                         }
                         catch (InvalidOperationException)
                         {
@@ -1008,6 +1211,8 @@ namespace Rehber.DESKTOP.Forms
 
         private void DuzeltBtn_Click(object sender, EventArgs e)
         {
+            Cursor.Current = Cursors.WaitCursor;
+
             if (flag == "Kisi")
             {
                 string flagConnector = "KisiDüzelt";
@@ -1095,10 +1300,13 @@ namespace Rehber.DESKTOP.Forms
                     }
                 }
             }
+            Cursor.Current = Cursors.Default;
         }
 
         private async void SilBtn_Click(object sender, EventArgs e)
         {
+            Cursor.Current = Cursors.WaitCursor;
+
             if (flag == "Kisi")
             {
                 if (dataGridView1.SelectedRows.Count < 1 || dataGridView1.SelectedRows.Count > 1)
@@ -1227,6 +1435,7 @@ namespace Rehber.DESKTOP.Forms
                     }
                 }
             }
+            Cursor.Current = Cursors.Default;
         }
 
         private void KisiBtn_Click(object sender, EventArgs e)
@@ -1268,7 +1477,7 @@ namespace Rehber.DESKTOP.Forms
             dataGridView1.Columns[4].Width = 192;
             dataGridView1.Columns[5].Width = 154;
             dataGridView1.Columns[6].Width = 150;
-            dataGridView1.Columns[7].Width = 194;
+            dataGridView1.Columns[7].Width = 195;
         }
 
         private void SirketBtn_Click(object sender, EventArgs e)
@@ -1307,7 +1516,7 @@ namespace Rehber.DESKTOP.Forms
             dataGridView1.Columns[3].Width = 196;
             dataGridView1.Columns[4].Width = 165;
             dataGridView1.Columns[5].Width = 166;
-            dataGridView1.Columns[6].Width = 249;
+            dataGridView1.Columns[6].Width = 250;
         }
 
         private void BirimBtn_Click(object sender, EventArgs e)
@@ -1341,7 +1550,7 @@ namespace Rehber.DESKTOP.Forms
             dataGridView1.Columns[1].Width = 192;
             dataGridView1.Columns[2].Width = 219;
             dataGridView1.Columns[3].Width = 256;
-            dataGridView1.Columns[4].Width = 365;
+            dataGridView1.Columns[4].Width = 366;
         }
 
         private void SantiyeBtn_Click(object sender, EventArgs e)
@@ -1375,7 +1584,7 @@ namespace Rehber.DESKTOP.Forms
             dataGridView1.Columns[1].Width = 192;
             dataGridView1.Columns[2].Width = 224;
             dataGridView1.Columns[3].Width = 251;
-            dataGridView1.Columns[4].Width = 365;
+            dataGridView1.Columns[4].Width = 366;
         }
 
         private void LokasyonBtn_Click(object sender, EventArgs e)
@@ -1401,35 +1610,6 @@ namespace Rehber.DESKTOP.Forms
 
         private void AktarBtn_ButtonClick(object sender, EventArgs e)
         {
-
-            /*Microsoft.Office.Interop.Excel._Application app = new Microsoft.Office.Interop.Excel.Application();
-            Microsoft.Office.Interop.Excel.Workbook workbook = app.Workbooks.Add(Type.Missing);
-            Microsoft.Office.Interop.Excel._Worksheet worksheet = null;
-            worksheet = workbook.Sheets["Kitap1"];
-            worksheet = workbook.ActiveSheet;
-            worksheet.Name = "Rehber";
-
-            for (int i = 1; i < dataGridView1.Columns.Count + 1; i++)
-            {
-                worksheet.Cells[1, i] = dataGridView1.Columns[i - 1].HeaderText;
-            }
-            
-            for(int i = 0; i < dataGridView1.Rows.Count; i++)
-            {
-                for(int j = 0; j < dataGridView1.Columns.Count; j++)
-                {
-                    worksheet.Cells[i + 2, j + 1] = dataGridView1.Rows[i].Cells[j].Value.ToString();
-                }
-            }
-
-            var saveFileDialog = new SaveFileDialog();
-            saveFileDialog.FileName = "output";
-            saveFileDialog.DefaultExt = ".xlsx";
-            if(saveFileDialog.ShowDialog() == DialogResult.OK)
-            {
-                workbook.SaveAs(saveFileDialog.FileName, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Microsoft.Office.Interop.Excel.XlSaveAsAccessMode.xlExclusive, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
-            }
-            app.Quit();*/
             if (dataGridView1.Rows.Count == 0)
             {
                 var _messageBox = new MsgBox(5, "", "", "");
@@ -1453,12 +1633,12 @@ namespace Rehber.DESKTOP.Forms
                     }
                 }
 
-                string folderPath = "C:\\Users\\ROG\\Desktop\\";
+                string folderPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 
                 using (XLWorkbook wb = new XLWorkbook())
                 {
                     wb.Worksheets.Add(dt, "Rehber");
-                    wb.SaveAs(folderPath + "Rehber.xlsx");
+                    wb.SaveAs(folderPath + "\\Rehber.xlsx");
                 }
 
                 var _messageBox = new MsgBox(2, "", "", "");

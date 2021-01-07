@@ -3,6 +3,7 @@ using Rehber.DESKTOP.Shared;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace Rehber.DESKTOP.Forms
@@ -22,8 +23,22 @@ namespace Rehber.DESKTOP.Forms
             this.flag = flag;
         }
 
+        List<string> DahiliList = new List<string>();
+        List<string> SabitList = new List<string>();
+        List<string> MobilList = new List<string>();
+        List<string> FaxList = new List<string>();
+        List<string> VergiList = new List<string>();
+        List<string> EMailList = new List<string>();
+        List<Iletisim> DahiliListObj = new List<Iletisim>();
+        List<Iletisim> SabitListObj = new List<Iletisim>();
+        List<Iletisim> MobilListObj = new List<Iletisim>();
+        List<Iletisim> FaxListObj = new List<Iletisim>();
+        List<Iletisim> VergiListObj = new List<Iletisim>();
+        List<Iletisim> EMailListObj = new List<Iletisim>();
+
         private void Tool_Load(object sender, EventArgs e)
         {
+            int q = 0;
             KaydetBtn.ShowDropDownArrow = false;
             dataGridView1.Columns[1].Width = 362;
             dataGridView1.BorderStyle = BorderStyle.None;
@@ -31,9 +46,11 @@ namespace Rehber.DESKTOP.Forms
             dataGridView1.DefaultCellStyle.SelectionBackColor = Color.White;
             dataGridView1.BackgroundColor = Color.White;
             dataGridView1.EnableHeadersVisualStyles = false;
+            
 
             if (flag == "KisiDüzelt")
             {
+                q = 0;
                 AdTb.Text = Mainn.First;
                 SoyadTb.Text = Mainn.Second;
                 DahiliTb.Text = Mainn.Third;
@@ -42,6 +59,59 @@ namespace Rehber.DESKTOP.Forms
                 SirketTb.Text = Mainn.Sixth;
                 DepartmanTb.Text = Mainn.Seventh;
                 AciklamaTb.Text = Mainn.Eighth;
+
+                DahiliListObj = new List<Iletisim>();
+                MobilListObj = new List<Iletisim>();
+                EMailListObj = new List<Iletisim>();
+
+                var DetayHolders = IletisimRestHelper.GetAll().Where(a => a.RehberId == Mainn.Ninth);
+
+                foreach (var IletisimContainerTemp in DetayHolders)
+                {
+                    if (IletisimContainerTemp.IletisimTuru == 1)
+                    {
+                        DahiliListObj.Add(IletisimContainerTemp);
+                    }
+                    else if (IletisimContainerTemp.IletisimTuru == 3)
+                    {
+                        MobilListObj.Add(IletisimContainerTemp);
+                    }
+                    else if (IletisimContainerTemp.IletisimTuru == 7)
+                    {
+                        EMailListObj.Add(IletisimContainerTemp);
+                    }
+                }
+
+                if (DahiliListObj.Count() > 1)
+                {
+                    for(int i = 1; i < DahiliListObj.Count(); i++)
+                    {
+                        dataGridView1.Rows.Add();
+                        dataGridView1.Rows[q].Cells[0].Value = "Dahili No";
+                        dataGridView1.Rows[q].Cells[1].Value = DahiliListObj[i].IAciklama;
+                        q++;
+                    }
+                }
+                if (MobilListObj.Count() > 1)
+                {
+                    for (int i = 1; i < MobilListObj.Count(); i++)
+                    {
+                        dataGridView1.Rows.Add();
+                        dataGridView1.Rows[q].Cells[0].Value = "Mobil No";
+                        dataGridView1.Rows[q].Cells[1].Value = MobilListObj[i].IAciklama;
+                        q++;
+                    }
+                }
+                if (EMailListObj.Count() > 1)
+                {
+                    for (int i = 1; i < EMailListObj.Count(); i++)
+                    {
+                        dataGridView1.Rows.Add();
+                        dataGridView1.Rows[q].Cells[0].Value = "E-mail Adresi";
+                        dataGridView1.Rows[q].Cells[1].Value = EMailListObj[i].IAciklama;
+                        q++;
+                    }
+                }
             }
             else if (flag == "SirketEkle")
             {
@@ -69,6 +139,7 @@ namespace Rehber.DESKTOP.Forms
             }
             else if (flag == "SirketDüzelt")
             {
+                q = 0;
                 AdLbl.Text = "Şirket Adı:";
                 SoyadLbl.Text = "Sabit No:";
                 SoyadTb.Size = new Size(56, 20);
@@ -96,6 +167,29 @@ namespace Rehber.DESKTOP.Forms
                 DepartmanTb.Text = Mainn.Sixth;
                 LokasyonLbl.Location = new Point(25, 139);
                 myLocationControl.Location = new Point(123, 136);
+
+                var DetayHolders = IletisimRestHelper.GetAll().Where(a => a.RehberId == Mainn.Ninth);
+
+                SabitListObj = new List<Iletisim>();
+
+                foreach (var IletisimContainerTemp in DetayHolders)
+                {
+                    if (IletisimContainerTemp.IletisimTuru == 2)
+                    {
+                        SabitListObj.Add(IletisimContainerTemp);
+                    }
+                }
+
+                if (SabitListObj.Count() > 1)
+                {
+                    for (int i = 1; i < SabitListObj.Count(); i++)
+                    {
+                        dataGridView1.Rows.Add();
+                        dataGridView1.Rows[q].Cells[0].Value = "Sabit No";
+                        dataGridView1.Rows[q].Cells[1].Value = SabitListObj[i].IAciklama;
+                        q++;
+                    }
+                }
             }
             else if (flag == "BirimEkle")
             {
@@ -121,6 +215,7 @@ namespace Rehber.DESKTOP.Forms
             }
             else if (flag == "BirimDüzelt")
             {
+                q = 0;
                 AdLbl.Text = "Birim Adı:";
                 SoyadLbl.Text = "Şirket Adı:";
                 DahiliLbl.Text = "Dahili No:";
@@ -144,9 +239,32 @@ namespace Rehber.DESKTOP.Forms
                 MobilTb.Text = Mainn.Fourth;
                 LokasyonLbl.Location = new Point(25, 97);
                 myLocationControl.Location = new Point(123, 94);
+
+                var DetayHolders = IletisimRestHelper.GetAll().Where(a => a.RehberId == Mainn.Ninth);
+
+                DahiliListObj = new List<Iletisim>();
+
+                foreach (var IletisimContainerTemp in DetayHolders)
+                {
+                    if (IletisimContainerTemp.IletisimTuru == 1)
+                    {
+                        DahiliListObj.Add(IletisimContainerTemp);
+                    }
+                }
+
+                if (DahiliList.Count() > 1)
+                {
+                    for (int i = 1; i < DahiliListObj.Count(); i++)
+                    {
+                        dataGridView1.Rows.Add();
+                        dataGridView1.Rows[q].Cells[0].Value = "Dahili No";
+                        dataGridView1.Rows[q].Cells[1].Value = DahiliListObj[i].IAciklama;
+                        q++;
+                    }
+                }
             }
             else if (flag == "SantiyeEkle")
-            {
+            { 
                 AdLbl.Text = "Şantiye Adı:";
                 SoyadLbl.Text = "Sabit No:";
                 SoyadTb.Size = new Size(143, 20);
@@ -171,6 +289,7 @@ namespace Rehber.DESKTOP.Forms
             }
             else if (flag == "SantiyeDüzelt")
             {
+                q = 0;
                 AdLbl.Text = "Şantiye Adı:";
                 SoyadLbl.Text = "Sabit No:";
                 SoyadTb.Size = new Size(110, 20);
@@ -196,6 +315,44 @@ namespace Rehber.DESKTOP.Forms
                 MobilTb.Text = Mainn.Fourth;
                 LokasyonLbl.Location = new Point(25, 97);
                 myLocationControl.Location = new Point(123, 94);
+
+                var DetayHolders = IletisimRestHelper.GetAll().Where(a => a.RehberId == Mainn.Ninth);
+
+                SabitListObj = new List<Iletisim>();
+                FaxListObj = new List<Iletisim>();
+
+                foreach (var IletisimContainerTemp in DetayHolders)
+                {
+                    if (IletisimContainerTemp.IletisimTuru == 2)
+                    {
+                        SabitListObj.Add(IletisimContainerTemp);
+                    }
+                    else if (IletisimContainerTemp.IletisimTuru == 4)
+                    {
+                        FaxListObj.Add(IletisimContainerTemp);
+                    }
+                }
+
+                if (SabitListObj.Count() > 1)
+                {
+                    for (int i = 1; i < SabitListObj.Count(); i++)
+                    {
+                        dataGridView1.Rows.Add();
+                        dataGridView1.Rows[q].Cells[0].Value = "Sabit No";
+                        dataGridView1.Rows[q].Cells[1].Value = SabitListObj[i].IAciklama;
+                        q++;
+                    }
+                }
+                if (FaxListObj.Count() > 1)
+                {
+                    for (int i = 1; i < FaxListObj.Count(); i++)
+                    {
+                        dataGridView1.Rows.Add();
+                        dataGridView1.Rows[q].Cells[0].Value = "Fax No";
+                        dataGridView1.Rows[q].Cells[1].Value = FaxListObj[i].IAciklama;
+                        q++;
+                    }
+                }
             }
         }
 
@@ -212,7 +369,7 @@ namespace Rehber.DESKTOP.Forms
         public static string ToUpperEveryWord(string s)
         {
             if (string.IsNullOrEmpty(s))
-            {
+            {   
                 return string.Empty;
             }
 
@@ -417,19 +574,21 @@ namespace Rehber.DESKTOP.Forms
             return 0;
         }
 
+        int IletisimHolder;
+
         private async void btnKaydet_Click(object sender, EventArgs e)
         {
-            int IletisimHolder;
+            Cursor.Current = Cursors.WaitCursor;
+            dataGridView1.EndEdit();
 
             if (AdTb.Text == "")
             {
+                tabControlRehberInfo.SelectedTab = this.tabPage1;
                 AdTb.Focus();
                 errorProvider1.SetError(AdTb, "Bu kısım boş bırakılamaz");
             }
             else if (AdTb.Text != "")
             {
-                Cursor.Current = Cursors.WaitCursor;
-
                 if (flag == "KisiEkle")
                 {
                     RehberInfo RehberInfoVar = new RehberInfo();
@@ -485,13 +644,39 @@ namespace Rehber.DESKTOP.Forms
                         await IletisimRestHelper.Post(IletisimVar);
                     }
 
-                    dataGridView1.Rows[0].Cells[0].Value.
-
-                    if ((string)dataGridView1.Rows[0].Cells[0].Value == "Fax No")
+                    for(int i = 0; i < dataGridView1.Rows.Count - 1; i++)
                     {
-                        int p = dataGridView1.Rows[0].Index;
-                    }
+                        if (dataGridView1.Rows[i].Cells[0].Value.ToString() == "Dahili No")
+                        {
+                            IletisimHolder = 1;
+                        }
+                        else if (dataGridView1.Rows[i].Cells[0].Value.ToString() == "Sabit No")
+                        {
+                            IletisimHolder = 2;
+                        }
+                        else if (dataGridView1.Rows[i].Cells[0].Value.ToString() == "Mobil No")
+                        {
+                            IletisimHolder = 3;
+                        }
+                        else if (dataGridView1.Rows[i].Cells[0].Value.ToString() == "Fax No")
+                        {
+                            IletisimHolder = 4;
+                        }
+                        else if (dataGridView1.Rows[i].Cells[0].Value.ToString() == "Vergi No")
+                        {
+                            IletisimHolder = 5;
+                        }
+                        else if (dataGridView1.Rows[i].Cells[0].Value.ToString() == "E-mail Adresi")
+                        {
+                            IletisimHolder = 7;
+                        }
 
+                        IletisimVar = new Iletisim();
+                        IletisimVar.RehberId = RehberInfoIdHolder;
+                        IletisimVar.IletisimTuru = (byte)IletisimHolder;
+                        IletisimVar.IAciklama = dataGridView1.Rows[i].Cells[1].Value.ToString();
+                        await IletisimRestHelper.Post(IletisimVar);
+                    }
 
                     string AdSoyad = ToUpperEveryWord(AdTb.Text) + " " + UppercaseFirst(SoyadTb.Text);
 
@@ -502,6 +687,19 @@ namespace Rehber.DESKTOP.Forms
                 }
                 else if (flag == "KisiDüzelt")
                 {
+                    for (int i = 1; i < DahiliListObj.Count(); i++)
+                    {
+                        await IletisimRestHelper.Delete(DahiliListObj[i].Id);
+                    }
+                    for (int i = 1; i < MobilListObj.Count(); i++)
+                    {
+                        await IletisimRestHelper.Delete(MobilListObj[i].Id);
+                    }
+                    for (int i = 1; i < EMailListObj.Count(); i++)
+                    {
+                        await IletisimRestHelper.Delete(EMailListObj[i].Id);
+                    }
+
                     RehberInfo RehberInfoVar = new RehberInfo();
                     Lokasyon LokasyonVar = new Lokasyon();
                     Iletisim IletisimVar = new Iletisim();
@@ -581,6 +779,40 @@ namespace Rehber.DESKTOP.Forms
                         }
                     }
 
+                    for (int i = 0; i < dataGridView1.Rows.Count - 1; i++)
+                    {
+                        if (dataGridView1.Rows[i].Cells[0].Value.ToString() == "Dahili No")
+                        {
+                            IletisimHolder = 1;
+                        }
+                        else if (dataGridView1.Rows[i].Cells[0].Value.ToString() == "Sabit No")
+                        {
+                            IletisimHolder = 2;
+                        }
+                        else if (dataGridView1.Rows[i].Cells[0].Value.ToString() == "Mobil No")
+                        {
+                            IletisimHolder = 3;
+                        }
+                        else if (dataGridView1.Rows[i].Cells[0].Value.ToString() == "Fax No")
+                        {
+                            IletisimHolder = 4;
+                        }
+                        else if (dataGridView1.Rows[i].Cells[0].Value.ToString() == "Vergi No")
+                        {
+                            IletisimHolder = 5;
+                        }
+                        else if (dataGridView1.Rows[i].Cells[0].Value.ToString() == "E-mail Adresi")
+                        {
+                            IletisimHolder = 7;
+                        }
+
+                        IletisimVar = new Iletisim();
+                        IletisimVar.RehberId = RehberInfoIdHolder;
+                        IletisimVar.IletisimTuru = (byte)IletisimHolder;
+                        IletisimVar.IAciklama = dataGridView1.Rows[i].Cells[1].Value.ToString();
+                        await IletisimRestHelper.Post(IletisimVar);
+                    }
+
                     string AdSoyad = ToUpperEveryWord(AdTb.Text) + " " + UppercaseFirst(SoyadTb.Text);
 
                     var _messageBox = new MsgBox(4, AdSoyad, "", "düzenlendi");
@@ -640,6 +872,40 @@ namespace Rehber.DESKTOP.Forms
                         await IletisimRestHelper.Post(IletisimVar);
                     }
 
+                    for (int i = 0; i < dataGridView1.Rows.Count - 1; i++)
+                    {
+                        if (dataGridView1.Rows[i].Cells[0].Value.ToString() == "Dahili No")
+                        {
+                            IletisimHolder = 1;
+                        }
+                        else if (dataGridView1.Rows[i].Cells[0].Value.ToString() == "Sabit No")
+                        {
+                            IletisimHolder = 2;
+                        }
+                        else if (dataGridView1.Rows[i].Cells[0].Value.ToString() == "Mobil No")
+                        {
+                            IletisimHolder = 3;
+                        }
+                        else if (dataGridView1.Rows[i].Cells[0].Value.ToString() == "Fax No")
+                        {
+                            IletisimHolder = 4;
+                        }
+                        else if (dataGridView1.Rows[i].Cells[0].Value.ToString() == "Vergi No")
+                        {
+                            IletisimHolder = 5;
+                        }
+                        else if (dataGridView1.Rows[i].Cells[0].Value.ToString() == "E-mail Adresi")
+                        {
+                            IletisimHolder = 7;
+                        }
+
+                        IletisimVar = new Iletisim();
+                        IletisimVar.RehberId = RehberInfoIdHolder;
+                        IletisimVar.IletisimTuru = (byte)IletisimHolder;
+                        IletisimVar.IAciklama = dataGridView1.Rows[i].Cells[1].Value.ToString();
+                        await IletisimRestHelper.Post(IletisimVar);
+                    }
+
                     var _messageBox = new MsgBox(4, ToUpperEveryWord(AdTb.Text), "", "eklendi");
                     _messageBox.ShowDialog();
                     this.DialogResult = DialogResult.OK;
@@ -647,6 +913,11 @@ namespace Rehber.DESKTOP.Forms
                 }
                 if (flag == "SirketDüzelt")
                 {
+                    for (int i = 1; i < SabitListObj.Count(); i++)
+                    {
+                        await IletisimRestHelper.Delete(DahiliListObj[i].Id);
+                    }
+
                     RehberInfo RehberInfoVar = new RehberInfo();
                     Lokasyon LokasyonVar = new Lokasyon();
                     Iletisim IletisimVar = new Iletisim();
@@ -722,6 +993,40 @@ namespace Rehber.DESKTOP.Forms
                         }
                     }
 
+                    for (int i = 0; i < dataGridView1.Rows.Count - 1; i++)
+                    {
+                        if (dataGridView1.Rows[i].Cells[0].Value.ToString() == "Dahili No")
+                        {
+                            IletisimHolder = 1;
+                        }
+                        else if (dataGridView1.Rows[i].Cells[0].Value.ToString() == "Sabit No")
+                        {
+                            IletisimHolder = 2;
+                        }
+                        else if (dataGridView1.Rows[i].Cells[0].Value.ToString() == "Mobil No")
+                        {
+                            IletisimHolder = 3;
+                        }
+                        else if (dataGridView1.Rows[i].Cells[0].Value.ToString() == "Fax No")
+                        {
+                            IletisimHolder = 4;
+                        }
+                        else if (dataGridView1.Rows[i].Cells[0].Value.ToString() == "Vergi No")
+                        {
+                            IletisimHolder = 5;
+                        }
+                        else if (dataGridView1.Rows[i].Cells[0].Value.ToString() == "E-mail Adresi")
+                        {
+                            IletisimHolder = 7;
+                        }
+
+                        IletisimVar = new Iletisim();
+                        IletisimVar.RehberId = RehberInfoIdHolder;
+                        IletisimVar.IletisimTuru = (byte)IletisimHolder;
+                        IletisimVar.IAciklama = dataGridView1.Rows[i].Cells[1].Value.ToString();
+                        await IletisimRestHelper.Post(IletisimVar);
+                    }
+
                     var _messageBox = new MsgBox(4, ToUpperEveryWord(AdTb.Text), "", "düzenlendi");
                     _messageBox.ShowDialog();
 
@@ -764,6 +1069,40 @@ namespace Rehber.DESKTOP.Forms
 
                     }
 
+                    for (int i = 0; i < dataGridView1.Rows.Count - 1; i++)
+                    {
+                        if (dataGridView1.Rows[i].Cells[0].Value.ToString() == "Dahili No")
+                        {
+                            IletisimHolder = 1;
+                        }
+                        else if (dataGridView1.Rows[i].Cells[0].Value.ToString() == "Sabit No")
+                        {
+                            IletisimHolder = 2;
+                        }
+                        else if (dataGridView1.Rows[i].Cells[0].Value.ToString() == "Mobil No")
+                        {
+                            IletisimHolder = 3;
+                        }
+                        else if (dataGridView1.Rows[i].Cells[0].Value.ToString() == "Fax No")
+                        {
+                            IletisimHolder = 4;
+                        }
+                        else if (dataGridView1.Rows[i].Cells[0].Value.ToString() == "Vergi No")
+                        {
+                            IletisimHolder = 5;
+                        }
+                        else if (dataGridView1.Rows[i].Cells[0].Value.ToString() == "E-mail Adresi")
+                        {
+                            IletisimHolder = 7;
+                        }
+
+                        IletisimVar = new Iletisim();
+                        IletisimVar.RehberId = RehberInfoIdHolder;
+                        IletisimVar.IletisimTuru = (byte)IletisimHolder;
+                        IletisimVar.IAciklama = dataGridView1.Rows[i].Cells[1].Value.ToString();
+                        await IletisimRestHelper.Post(IletisimVar);
+                    }
+
                     var _messageBox = new MsgBox(4, ToUpperEveryWord(AdTb.Text), "", "eklendi");
                     _messageBox.ShowDialog();
 
@@ -772,6 +1111,11 @@ namespace Rehber.DESKTOP.Forms
                 }
                 else if (flag == "BirimDüzelt")
                 {
+                    for (int i = 1; i < DahiliListObj.Count(); i++)
+                    {
+                        await IletisimRestHelper.Delete(DahiliListObj[i].Id);
+                    }
+
                     RehberInfo RehberInfoVar = new RehberInfo();
                     Lokasyon LokasyonVar = new Lokasyon();
                     Iletisim IletisimVar = new Iletisim();
@@ -814,6 +1158,40 @@ namespace Rehber.DESKTOP.Forms
                         {
                             await IletisimRestHelper.Put(IletisimIdHolder, IletisimVar);
                         }
+                    }
+
+                    for (int i = 0; i < dataGridView1.Rows.Count - 1; i++)
+                    {
+                        if (dataGridView1.Rows[i].Cells[0].Value.ToString() == "Dahili No")
+                        {
+                            IletisimHolder = 1;
+                        }
+                        else if (dataGridView1.Rows[i].Cells[0].Value.ToString() == "Sabit No")
+                        {
+                            IletisimHolder = 2;
+                        }
+                        else if (dataGridView1.Rows[i].Cells[0].Value.ToString() == "Mobil No")
+                        {
+                            IletisimHolder = 3;
+                        }
+                        else if (dataGridView1.Rows[i].Cells[0].Value.ToString() == "Fax No")
+                        {
+                            IletisimHolder = 4;
+                        }
+                        else if (dataGridView1.Rows[i].Cells[0].Value.ToString() == "Vergi No")
+                        {
+                            IletisimHolder = 5;
+                        }
+                        else if (dataGridView1.Rows[i].Cells[0].Value.ToString() == "E-mail Adresi")
+                        {
+                            IletisimHolder = 7;
+                        }
+
+                        IletisimVar = new Iletisim();
+                        IletisimVar.RehberId = RehberInfoIdHolder;
+                        IletisimVar.IletisimTuru = (byte)IletisimHolder;
+                        IletisimVar.IAciklama = dataGridView1.Rows[i].Cells[1].Value.ToString();
+                        await IletisimRestHelper.Post(IletisimVar);
                     }
 
                     var _messageBox = new MsgBox(4, ToUpperEveryWord(AdTb.Text), "", "düzenlendi");
@@ -867,6 +1245,40 @@ namespace Rehber.DESKTOP.Forms
 
                     }
 
+                    for (int i = 0; i < dataGridView1.Rows.Count - 1; i++)
+                    {
+                        if (dataGridView1.Rows[i].Cells[0].Value.ToString() == "Dahili No")
+                        {
+                            IletisimHolder = 1;
+                        }
+                        else if (dataGridView1.Rows[i].Cells[0].Value.ToString() == "Sabit No")
+                        {
+                            IletisimHolder = 2;
+                        }
+                        else if (dataGridView1.Rows[i].Cells[0].Value.ToString() == "Mobil No")
+                        {
+                            IletisimHolder = 3;
+                        }
+                        else if (dataGridView1.Rows[i].Cells[0].Value.ToString() == "Fax No")
+                        {
+                            IletisimHolder = 4;
+                        }
+                        else if (dataGridView1.Rows[i].Cells[0].Value.ToString() == "Vergi No")
+                        {
+                            IletisimHolder = 5;
+                        }
+                        else if (dataGridView1.Rows[i].Cells[0].Value.ToString() == "E-mail Adresi")
+                        {
+                            IletisimHolder = 7;
+                        }
+
+                        IletisimVar = new Iletisim();
+                        IletisimVar.RehberId = RehberInfoIdHolder;
+                        IletisimVar.IletisimTuru = (byte)IletisimHolder;
+                        IletisimVar.IAciklama = dataGridView1.Rows[i].Cells[1].Value.ToString();
+                        await IletisimRestHelper.Post(IletisimVar);
+                    }
+
                     var _messageBox = new MsgBox(4, ToUpperEveryWord(AdTb.Text), "", "eklendi");
                     _messageBox.ShowDialog();
 
@@ -875,6 +1287,15 @@ namespace Rehber.DESKTOP.Forms
                 }
                 else if (flag == "SantiyeDüzelt")
                 {
+                    for (int i = 1; i < SabitListObj.Count(); i++)
+                    {
+                        await IletisimRestHelper.Delete(SabitListObj[i].Id);
+                    }
+                    for (int i = 1; i < FaxListObj.Count(); i++)
+                    {
+                        await IletisimRestHelper.Delete(FaxListObj[i].Id);
+                    }
+
                     RehberInfo RehberInfoVar = new RehberInfo();
                     Lokasyon LokasyonVar = new Lokasyon();
                     Iletisim IletisimVar = new Iletisim();
@@ -934,14 +1355,48 @@ namespace Rehber.DESKTOP.Forms
                         }
                     }
 
+                    for (int i = 0; i < dataGridView1.Rows.Count - 1; i++)
+                    {
+                        if (dataGridView1.Rows[i].Cells[0].Value.ToString() == "Dahili No")
+                        {
+                            IletisimHolder = 1;
+                        }
+                        else if (dataGridView1.Rows[i].Cells[0].Value.ToString() == "Sabit No")
+                        {
+                            IletisimHolder = 2;
+                        }
+                        else if (dataGridView1.Rows[i].Cells[0].Value.ToString() == "Mobil No")
+                        {
+                            IletisimHolder = 3;
+                        }
+                        else if (dataGridView1.Rows[i].Cells[0].Value.ToString() == "Fax No")
+                        {
+                            IletisimHolder = 4;
+                        }
+                        else if (dataGridView1.Rows[i].Cells[0].Value.ToString() == "Vergi No")
+                        {
+                            IletisimHolder = 5;
+                        }
+                        else if (dataGridView1.Rows[i].Cells[0].Value.ToString() == "E-mail Adresi")
+                        {
+                            IletisimHolder = 7;
+                        }
+
+                        IletisimVar = new Iletisim();
+                        IletisimVar.RehberId = RehberInfoIdHolder;
+                        IletisimVar.IletisimTuru = (byte)IletisimHolder;
+                        IletisimVar.IAciklama = dataGridView1.Rows[i].Cells[1].Value.ToString();
+                        await IletisimRestHelper.Post(IletisimVar);
+                    }
+
                     var _messageBox = new MsgBox(4, ToUpperEveryWord(AdTb.Text), "", "düzenlendi");
                     _messageBox.ShowDialog();
 
                     this.DialogResult = DialogResult.OK;
                     Close();
                 }
-                Cursor.Current = Cursors.WaitCursor;
             }
+            Cursor.Current = Cursors.Default;
         }
 
         private void tabControlRehberInfo_DrawItem(object sender, DrawItemEventArgs e)
@@ -978,6 +1433,7 @@ namespace Rehber.DESKTOP.Forms
         private void dataGridView1_MouseDown(object sender, MouseEventArgs e)
         {
             dataGridView1.ClearSelection();
+            dataGridView1.EndEdit();
         }
 
         private void dataGridView1_MouseUp(object sender, MouseEventArgs e)
