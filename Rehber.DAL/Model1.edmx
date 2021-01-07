@@ -1,0 +1,303 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="Rehber_v3Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Iletisim">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RehberId" Type="int" Nullable="false" />
+          <Property Name="IletisimTuru" Type="tinyint" Nullable="false" />
+          <Property Name="IAciklama" Type="varchar(max)" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Kullanici">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="KullaniciAdi" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="Ad" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Soyad" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Sifre" Type="varchar" MaxLength="30" Nullable="false" />
+          <Property Name="Rol" Type="varchar" MaxLength="5" Nullable="false" />
+          <Property Name="KAciklama" Type="varchar(max)" />
+          <Property Name="UserKey" Type="uniqueidentifier" />
+        </EntityType>
+        <EntityType Name="Lokasyon">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ParentId" Type="int" />
+          <Property Name="LAciklama" Type="varchar(max)" Nullable="false" />
+        </EntityType>
+        <EntityType Name="RehberInfo">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RehberKayitTuru" Type="tinyint" Nullable="false" />
+          <Property Name="Ad" Type="varchar" MaxLength="50" />
+          <Property Name="Soyad" Type="varchar" MaxLength="50" />
+          <Property Name="DepartmanAdi" Type="varchar" MaxLength="50" />
+          <Property Name="Sirket" Type="varchar" MaxLength="50" />
+          <Property Name="SirketUnvani" Type="varchar" MaxLength="50" />
+          <Property Name="BirimAdi" Type="varchar" MaxLength="50" />
+          <Property Name="Gorevi" Type="varchar" MaxLength="50" />
+          <Property Name="Santiye" Type="varchar" MaxLength="150" />
+          <Property Name="RAciklama" Type="varchar(max)" />
+          <Property Name="LokasId" Type="int" Nullable="false" />
+          <Property Name="Yetkilisi" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
+        </EntityType>
+        <Association Name="FK__Iletisim__Rehber__3D5E1FD2">
+          <End Role="RehberInfo" Type="Self.RehberInfo" Multiplicity="1" />
+          <End Role="Iletisim" Type="Self.Iletisim" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RehberInfo">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Iletisim">
+              <PropertyRef Name="RehberId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Rehber__LokasId__3A81B327">
+          <End Role="Lokasyon" Type="Self.Lokasyon" Multiplicity="1" />
+          <End Role="RehberInfo" Type="Self.RehberInfo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Lokasyon">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="RehberInfo">
+              <PropertyRef Name="LokasId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="Rehber_v3ModelStoreContainer">
+          <EntitySet Name="Iletisim" EntityType="Self.Iletisim" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Kullanici" EntityType="Self.Kullanici" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Lokasyon" EntityType="Self.Lokasyon" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="RehberInfo" EntityType="Self.RehberInfo" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__Iletisim__Rehber__3D5E1FD2" Association="Self.FK__Iletisim__Rehber__3D5E1FD2">
+            <End Role="RehberInfo" EntitySet="RehberInfo" />
+            <End Role="Iletisim" EntitySet="Iletisim" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Rehber__LokasId__3A81B327" Association="Self.FK__Rehber__LokasId__3A81B327">
+            <End Role="Lokasyon" EntitySet="Lokasyon" />
+            <End Role="RehberInfo" EntitySet="RehberInfo" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="Rehber_v3Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="Rehber_v3Entities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Iletisim" EntityType="Rehber_v3Model.Iletisim" />
+          <EntitySet Name="Kullanici" EntityType="Rehber_v3Model.Kullanici" />
+          <EntitySet Name="Lokasyon" EntityType="Rehber_v3Model.Lokasyon" />
+          <EntitySet Name="RehberInfo" EntityType="Rehber_v3Model.RehberInfo" />
+          <EntitySet Name="sysdiagrams" EntityType="Rehber_v3Model.sysdiagrams" />
+          <AssociationSet Name="FK__Iletisim__Rehber__3D5E1FD2" Association="Rehber_v3Model.FK__Iletisim__Rehber__3D5E1FD2">
+            <End Role="RehberInfo" EntitySet="RehberInfo" />
+            <End Role="Iletisim" EntitySet="Iletisim" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Rehber__LokasId__3A81B327" Association="Rehber_v3Model.FK__Rehber__LokasId__3A81B327">
+            <End Role="Lokasyon" EntitySet="Lokasyon" />
+            <End Role="RehberInfo" EntitySet="RehberInfo" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Iletisim">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RehberId" Type="Int32" Nullable="false" />
+          <Property Name="IletisimTuru" Type="Byte" Nullable="false" />
+          <Property Name="IAciklama" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="RehberInfo" Relationship="Rehber_v3Model.FK__Iletisim__Rehber__3D5E1FD2" FromRole="Iletisim" ToRole="RehberInfo" />
+        </EntityType>
+        <EntityType Name="Kullanici">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="KullaniciAdi" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Rol" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="Sifre" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="Ad" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Soyad" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="KAciklama" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="UserKey" Type="Guid" />
+        </EntityType>
+        <EntityType Name="Lokasyon">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ParentId" Type="Int32" />
+          <Property Name="LAciklama" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="RehberInfo" Relationship="Rehber_v3Model.FK__Rehber__LokasId__3A81B327" FromRole="Lokasyon" ToRole="RehberInfo" />
+        </EntityType>
+        <EntityType Name="RehberInfo">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RehberKayitTuru" Type="Byte" Nullable="false" />
+          <Property Name="Ad" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Soyad" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="DepartmanAdi" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Sirket" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="SirketUnvani" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="BirimAdi" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Gorevi" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Santiye" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+          <Property Name="RAciklama" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="LokasId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Iletisim" Relationship="Rehber_v3Model.FK__Iletisim__Rehber__3D5E1FD2" FromRole="RehberInfo" ToRole="Iletisim" />
+          <NavigationProperty Name="Lokasyon" Relationship="Rehber_v3Model.FK__Rehber__LokasId__3A81B327" FromRole="RehberInfo" ToRole="Lokasyon" />
+          <Property Name="Yetkilisi" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
+        <Association Name="FK__Iletisim__Rehber__3D5E1FD2">
+          <End Type="Rehber_v3Model.RehberInfo" Role="RehberInfo" Multiplicity="1" />
+          <End Type="Rehber_v3Model.Iletisim" Role="Iletisim" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RehberInfo">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Iletisim">
+              <PropertyRef Name="RehberId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Rehber__LokasId__3A81B327">
+          <End Type="Rehber_v3Model.Lokasyon" Role="Lokasyon" Multiplicity="1" />
+          <End Type="Rehber_v3Model.RehberInfo" Role="RehberInfo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Lokasyon">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="RehberInfo">
+              <PropertyRef Name="LokasId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+     
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="Rehber_v3ModelStoreContainer" CdmEntityContainer="Rehber_v3Entities">
+          <EntitySetMapping Name="Iletisim">
+            <EntityTypeMapping TypeName="Rehber_v3Model.Iletisim">
+              <MappingFragment StoreEntitySet="Iletisim">
+                <ScalarProperty Name="IAciklama" ColumnName="IAciklama" />
+                <ScalarProperty Name="IletisimTuru" ColumnName="IletisimTuru" />
+                <ScalarProperty Name="RehberId" ColumnName="RehberId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Kullanici">
+            <EntityTypeMapping TypeName="Rehber_v3Model.Kullanici">
+              <MappingFragment StoreEntitySet="Kullanici">
+                <ScalarProperty Name="UserKey" ColumnName="UserKey" />
+                <ScalarProperty Name="KAciklama" ColumnName="KAciklama" />
+                <ScalarProperty Name="Rol" ColumnName="Rol" />
+                <ScalarProperty Name="Sifre" ColumnName="Sifre" />
+                <ScalarProperty Name="Soyad" ColumnName="Soyad" />
+                <ScalarProperty Name="Ad" ColumnName="Ad" />
+                <ScalarProperty Name="KullaniciAdi" ColumnName="KullaniciAdi" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Lokasyon">
+            <EntityTypeMapping TypeName="Rehber_v3Model.Lokasyon">
+              <MappingFragment StoreEntitySet="Lokasyon">
+                <ScalarProperty Name="LAciklama" ColumnName="LAciklama" />
+                <ScalarProperty Name="ParentId" ColumnName="ParentId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="RehberInfo">
+            <EntityTypeMapping TypeName="Rehber_v3Model.RehberInfo">
+              <MappingFragment StoreEntitySet="RehberInfo">
+                <ScalarProperty Name="Yetkilisi" ColumnName="Yetkilisi" />
+                <ScalarProperty Name="LokasId" ColumnName="LokasId" />
+                <ScalarProperty Name="RAciklama" ColumnName="RAciklama" />
+                <ScalarProperty Name="Santiye" ColumnName="Santiye" />
+                <ScalarProperty Name="Gorevi" ColumnName="Gorevi" />
+                <ScalarProperty Name="BirimAdi" ColumnName="BirimAdi" />
+                <ScalarProperty Name="SirketUnvani" ColumnName="SirketUnvani" />
+                <ScalarProperty Name="Sirket" ColumnName="Sirket" />
+                <ScalarProperty Name="DepartmanAdi" ColumnName="DepartmanAdi" />
+                <ScalarProperty Name="Soyad" ColumnName="Soyad" />
+                <ScalarProperty Name="Ad" ColumnName="Ad" />
+                <ScalarProperty Name="RehberKayitTuru" ColumnName="RehberKayitTuru" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="Rehber_v3Model.sysdiagrams">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="definition" ColumnName="definition" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
